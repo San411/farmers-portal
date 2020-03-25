@@ -1,5 +1,3 @@
-#Code by Rahul Noronha 00:56 24/03/2020
-
 muliplication_factor=1 #Initially the mulitplicarion factor is 1 and depending upon soil and weather it can go slightly up or down
 
 class Plant():
