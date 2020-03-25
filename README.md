@@ -1,2 +1,4 @@
 # farmers-portal
-gui
+GUI
+Google Translate
+Tim Sort
