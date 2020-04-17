@@ -1,11 +1,26 @@
-from twilio.rest import Client
+import requests
+import json
 
-# the following line needs your Twilio Account SID and Auth Token
-client = Client("ACfbf43b9d2f8e9a3b4a3d6c719a0c6121", "2ba4e19ad6f8c43cb6f0bc1ddc84832d")
+URL = 'https://www.sms4india.com/api/v1/sendCampaign'
 
-# change the "from_" number to your Twilio number and the "to" number
-# to the phone number you signed up for Twilio with, or upgrade your
-# account to send SMS to any phone number
-client.messages.create(to="+9483574894", 
-                       from_="+12569987543", 
-                       body="Quarentine is over")
+# get request
+def sendPostRequest(reqUrl, apiKey, secretKey, useType, phoneNo, senderId, textMessage):
+  req_params = {
+  'apikey':apiKey,
+  'secret':secretKey,
+  'usetype':useType,
+  'phone': phoneNo,
+  'message':textMessage,
+  'senderid':senderId
+  }
+  return requests.post(reqUrl, req_params)
+
+# get response
+response = sendPostRequest(URL, 'Z8SQ3MGQEU6FQ3MNSC8Z86M5J3QIMI3U', '9QAAWR93VT4XNQTV', 'stage', 'RECIEVER_NUM', 'YOUR_EMAIL_ID', 'MESSAGE' )
+"""
+  Note:-
+    you must provide apikey, secretkey, usetype, mobile, senderid and message values
+    and then requst to api
+"""
+# print response if you want
+print (response.text)
