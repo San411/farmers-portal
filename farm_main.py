@@ -1,5 +1,151 @@
 from tkinter import *
-def f(name, location):
+import sqlite3
+
+#creation of three tables udupi, bijapur and bangalore in database crop.db
+"""conn = sqlite3.connect('crop.db')
+c = conn.cursor()
+c.execute("""CREATE TABLE bijapur (id integer
+        name text,
+        email text,
+        crop text,
+        soil text,
+        irrigation text,
+        price real)
+        """)
+conn.commit()
+conn.close()
+
+conn = sqlite3.connect('crop.db')
+c = conn.cursor()
+c.execute("""CREATE TABLE udupi (id integer
+        name text,
+        email text,
+        crop text,
+        soil text,
+        irrigation text,
+        price real)
+        """)
+conn.commit()
+conn.close()
+
+conn = sqlite3.connect('crop.db')
+c = conn.cursor()
+c.execute("""CREATE TABLE bangalore (id integer
+        name text,
+        email text,
+        crop text,
+        soil text,
+        irrigation text,
+        price real)
+        """)
+conn.commit()
+conn.close()"""
+
+def f(name, location, email):
+
+    #function to return a list of all the crops selected
+    def crop_list():
+        crop = []
+        if(var_pea.get()==1):
+            crop.append('peas')
+        if (var_soya.get() == 1):
+            crop.append('soyabean')
+        if (var_wheat.get() == 1):
+            crop.append('wheat')
+        if (var_tur.get() == 1):
+            crop.append('turmeric')
+        if (var_maize.get() == 1):
+            crop.append('maize')
+        if (var_must.get() == 1):
+            crop.append('mustard')
+        if (var_pad.get() == 1):
+            crop.append('paddy')
+        if (var_mil.get() == 1):
+            crop.append('millet')
+        if (var_gn.get() == 1):
+            crop.append('groundnut')
+        if (var_cash.get() == 1):
+            crop.append('cashew')
+        if (var_ses.get() == 1):
+            crop.append('sesame')
+        if (var_bar.get() == 1):
+            crop.append('barley')
+        if (var_sug.get() == 1):
+            crop.append('sugarcane')
+        if (var_cot.get() == 1):
+            crop.append('cotton')
+
+        return crop
+
+    #For storing the data taken in
+    def store():
+
+        selected_crops = []
+        selected_crops = crop_list()
+        irr = drop_i.get()
+
+        if(location == 'Bijapur'):
+            sb = soil_bij.get()
+            conn = sqlite3.connect('crop.db')
+            c = conn.cursor()
+            index_b = 0
+            for i in selected_crops:
+                c.execute("INSERT INTO bijapur VALUES (:id, :name, :email, :crop, :soil, :irrigation, :price)", {
+                    'id': index_b,
+                    'name': name,
+                    'email': email,
+                    'crop': i,
+                    'soil': so,
+                    'irrigation': irr,
+                    'price': 0.0
+                })
+                index_b = index_b + 1
+            conn.commit()
+            conn.close()
+
+        elif(location=='Udupi'):
+            su = soil_ud.get()
+            conn = sqlite3.connect('crop.db')
+            c = conn.cursor()
+            index_u = 0
+            for i in selected_crops:
+                c.execute("INSERT INTO udupi VALUES (:id, :name, :email, :crop, :soil, :irrigation, :price)", {
+                    'id': index_u,
+                    'name': name,
+                    'email': email,
+                    'crop': i,
+                    'soil': su,
+                    'irrigation': irr,
+                    'price': 0.0
+                })
+                index_u = index_u + 1
+            conn.commit()
+            conn.close()
+
+        else:
+            sbr = soil_bang.get()
+            conn = sqlite3.connect('crop.db')
+            c = conn.cursor()
+            index_br = 0
+            for i in selected_crops:
+                c.execute("INSERT INTO bangalore VALUES (:id, :name, :email, :crop, :soil, :irrigation, :price)", {
+                    'id': index_br,
+                    'name': name,
+                    'email': email,
+                    'crop': i,
+                    'soil': sbr,
+                    'irrigation': irr,
+                    'price': 0.0
+                })
+                index_br = index_br + 1
+            c.execute("SELECT * FROM bangalore")
+            print(c.fetchall())
+            conn.commit()
+            conn.close()
+
+        final_label = Label(farm, text='Data registered successfully.', bg='white', fg='black', font=('Calibri', 14))
+        final_label.place(x=620, y=750)
+
     farm = Toplevel()
     farm.geometry('2000x1000')
     farm.state('zoomed')
@@ -19,18 +165,17 @@ def f(name, location):
     name_label = Label(farm, text = message, font=('Calibri', 14), bg='#09baa7', fg='black')
     name_label.place(x=1200, y=20)
 
-
-
+    #setting up icon image
     icon = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\sr.png")
     label_icon = Label(farm, image=icon, bg='#09baa7')
     label_icon.image = icon
     label_icon.place(x=700, y=200)
 
+    #intro line
     intro = Label(farm, text='WHAT ARE YOU SELLING?', font=('Britannic Bold', 18), bg='#ffffff', fg='grey')
     intro.place(x=600, y=380)
 
     #variables for checkbox
-
     var_pea = IntVar(farm)
     var_soya = IntVar(farm)
     var_wheat = IntVar(farm)
@@ -116,7 +261,7 @@ def f(name, location):
     soil.place(x=1270, y=700)
 
     #Button
-    Butt = Button(farm, text="Submit Info", width=15)
+    Butt = Button(farm, text="Submit Info", width=15, command=store)
     Butt.configure(bg='#09baa7', fg='#000000')
     Butt.place(x=650, y=700)
 
@@ -164,4 +309,3 @@ def f(name, location):
 
 
     farm.mainloop()
-
