@@ -8,10 +8,10 @@ with smtplib.SMTP('smtp.gmail.com',587) as smtp:
     smtp.starttls()
     smtp.ehlo()
 
-    smtp.login('sandeshbhat2000@gmail.com','iecsydcwgyifaafw')
+    smtp.login('karfarmersportal@gmail.com','GENERATED_PASSWORD')
 
-    subject='email module is working'
-    body='go sleep'
+    subject='TEXT'
+    body='TEXT'
     message=f'Subject: {subject}\n\n{body}'
 
-    smtp.sendmail('sandeshbhat2000@gmail.com','karfarmersportal@gmail.com',message)
+    smtp.sendmail('karfarmersportal@gmail.com','karfarmersportal@gmail.com',message)
