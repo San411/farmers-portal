@@ -1,69 +1,39 @@
 from bs4 import BeautifulSoup
 import requests
-
+import timsort
 #Function to webscrape data
 def scrape(content,cl):
-    d={}
-    b=2
-    for i in content.find('div', {"class": cl}).select("td")[1:14:2]:
-        y = content.find('div', {"class": cl}).select("td")[b]
-        d[i.getText()] = y.getText()
-        b += 2
-    return d
-    print(d)
-
+    d=[]
+    for i in content.find('div', {"class": cl}).select("td")[2:13:2]:
+        d.append(i.getText())
+    return timsort.timSort(d, len(d))
 #For Rabi crops
 url= 'https://farmers-portal.github.io/farmsite/rabi.html'
 response = requests.get(url, timeout=5)
 content = BeautifulSoup(response.content, "html.parser")
-#Declaring dictionaries
-wheat = {}
-barley = {}
-peas = {}
-sesame = {}
-mustard = {}
-wheat = scrape(content,"first")
-barley = scrape(content,"barl")
-mustard = scrape(content,"must")
-peas = scrape(content,"pea")
-sesame = scrape(content,"bottom")
-print("Rabi")
-print(wheat)
-print(barley)
-print(mustard)
-print(peas)
-print(sesame)
+base_price = {}
+base_price['wheat'] = scrape(content,"first")
+base_price['barley'] = scrape(content,"barl")
+base_price['mustard'] = scrape(content,"must")
+base_price['peas'] = scrape(content,"pea")
+base_price['sesame'] = scrape(content,"bottom")
 
 #For Kharif crops
 urlk= 'https://farmers-portal.github.io/farmsite/kharif.html'
 res = requests.get(urlk, timeout=5)
 cont = BeautifulSoup(res.content , "html.parser")
-millet = {}
-paddy = {}
-maize = {}
-sugarcane = {}
-soyabean = {}
-cashew = {}
-groundnut = {}
-cotton = {}
-turmeric = {}
-millet = scrape(cont,"first")
-paddy = scrape(cont,"pad")
-maize = scrape(cont,"mai")
-sugarcane = scrape(cont,"sugar")
-soyabean = scrape(cont,"soy")
-groundnut = scrape(cont,"gn")
-cotton = scrape(cont,"cot")
-cashew = scrape(cont,"bottom")
-turmeric = scrape(cont,"tur")
-print("Kharif")
-print(millet)
-print(paddy)
-print(maize)
-print(sugarcane)
-print(soyabean)
-print(groundnut)
-print(cotton)
-print(cashew)
-print(turmeric)
+
+base_price['millet'] = scrape(cont,"first")
+base_price['paddy'] = scrape(cont,"pad")
+base_price['maize'] = scrape(cont,"mai")
+base_price['sugarcane'] = scrape(cont,"sugar")
+base_price['soyabean'] = scrape(cont,"soy")
+base_price['groundnut'] = scrape(cont,"gn")
+base_price['cotton'] = scrape(cont,"cot")
+base_price['cashew'] = scrape(cont,"bottom")
+base_price['turmeric'] = scrape(cont,"tur")
+
+print(base_price)
+
+
 
