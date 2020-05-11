@@ -1,7 +1,9 @@
 from tkinter import *
 import sqlite3
-import factor
+import factor_code
 import datetime
+import test
+import sorting
 #conn = sqlite3.connect('purchase.db')
 #c = conn.cursor()
 #c.execute("""CREATE TABLE purchase_bij (
@@ -57,7 +59,7 @@ def basic_layout(location, name):
     root.state('zoomed')
     root.resizable(0, 0)
     root.config(bg = 'white')
-    green = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\green.png")
+    green = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\green.png")
     label = Label(root, image=green)
     label.image = green
     label.place(x=0, y=-220)
@@ -73,16 +75,17 @@ def basic_layout(location, name):
     amount.place(x=1370, y=70)
 
     #images
-    pea = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\peas.png")
-    wheat = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\wheat.png")
-    tur = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\turmeric.png")
-    maize = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\maize.png")
-    pad = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\paddy.png")
-    millet = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\millet.png")
-    gn = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\gn.png")
-    sesame = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\sesame.png")
-    barley = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\barley.png")
-    cotton = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\cotton.png")
+    pea = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\peas.png")
+    wheat = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\wheat.png")
+    tur = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\turmeric.png")
+    maize = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\maize.png")
+    pad = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\paddy.png")
+    millet = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\millet.png")
+    gn = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\gn.png")
+    gn = gn.subsample(1, 1)
+    sesame = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\sesame.png")
+    barley = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\barley.png")
+    cotton = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\cotton.png")
 
     #Label for images
     pea_label = Label(root, image=pea, bg='white')
@@ -145,7 +148,7 @@ def check(value):
         return 0
 
 def bijapur(name, address, email, number):
-    factor.bijapur()
+    factor_code.bijapur()
     bij = basic_layout('BIJAPUR', name)
 
     def return_list(crop):
@@ -195,6 +198,7 @@ def bijapur(name, address, email, number):
                 lbl.place(x=20, y=340)
                 date = int(variable_date.get())
                 delivery_status = radio.get()
+                sorting.email_verification()
 
                 def store(crop, farmer_id, price, purchase_day, d):
 
@@ -250,11 +254,11 @@ def bijapur(name, address, email, number):
 
             new = Toplevel()
             new.geometry('400x400+500+250')
-            new.config(bg='#222831')
+            new.config(bg='white')
             new.resizable(0, 0)
 
 
-            radio_label = Label(new, text="Do you want the items to be delivered?", font=('Britanic Bold', 15), bg='#222831', fg='white')
+            radio_label = Label(new, text="Do you want the items to be delivered?", font=('Britanic Bold', 15), bg='white', fg='black')
             radio_label.place(x=30, y=50)
             radio = StringVar(new)
             radio.set("Yes")
@@ -274,7 +278,7 @@ def bijapur(name, address, email, number):
             drop.place(x=140, y=180)
             place = Button(new, text='Confirm', width=10, height=2, command=final)
             place.place(x=150, y=280)
-
+            #test.t()
         if(cart_change!=0):
             add_to_cart.configure(text='Buy', command=deliver)
 
@@ -349,7 +353,7 @@ def bijapur(name, address, email, number):
     bij.mainloop()
 
 def bang(name, address, email, number):
-    factor.bangalore()
+    factor_code.bangalore()
     ban = basic_layout('BANGALORE  RURAL', name)
 
 
@@ -373,7 +377,7 @@ def bang(name, address, email, number):
 
     def go_back():
         ban.destroy()
-        page1()
+        page1(name, address, email, number)
 
     def show():
         cart_change = 0
@@ -398,6 +402,7 @@ def bang(name, address, email, number):
                 lbl.place(x=20, y=340)
                 date = int(variable_date.get())
                 delivery_status = radio.get()
+
 
                 def store(crop, farmer_id, price, purchase_day, d):
 
@@ -476,7 +481,8 @@ def bang(name, address, email, number):
             drop.place(x=140, y=180)
             place = Button(new, text='Confirm', width=10, height=2, command=final)
             place.place(x=150, y=280)
-
+            user_name = name.get()
+            sorting.email_verification(user_name)
         if (cart_change != 0):
             add_to_cart.configure(text='Buy', command=deliver)
 
@@ -547,7 +553,7 @@ def bang(name, address, email, number):
     ban.mainloop()
 
 def udupi(name, address, email, number):
-    factor.udupi()
+    factor_code.udupi()
     ud = basic_layout('UDUPI', name)
 
     def return_list(crop):
@@ -672,7 +678,7 @@ def udupi(name, address, email, number):
             drop.place(x=140, y=180)
             place = Button(new, text='Confirm', width=10, height=2, command=final)
             place.place(x=150, y=280)
-
+            #test.t()
         if (cart_change != 0):
             add_to_cart.configure(text='Buy', command=deliver)
 
@@ -721,6 +727,7 @@ def udupi(name, address, email, number):
     var_bar = StringVar(ud)
     option_bar = return_list('barley')
     var_bar.set(option_bar[0])
+
     drop_bar = OptionMenu(ud, var_bar, *option_bar)
     drop_bar.place(x=670, y=670)
 
@@ -760,13 +767,13 @@ def page1(name, address, email, number):
     user.resizable(0, 0)
     user.title('MAIN PAGE')
     user.config(bg='white')
-    bg = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\green.png")
+    bg = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\green.png")
     label = Label(user, image=bg)
     label.image = bg
     label.pack()
-    title = Label(user, text='SEARCH.    FIND.    BUY.', font=('Britannic Bold', 70), bg='#09baa7', fg='grey')
+    title = Label(user, text='SEARCH.    FIND.    BUY.', font=('Britannic Bold', 70), bg='#09baa7', fg='white')
     title.place(x=270, y=100)
-    text = Label(user, text='WHICH LOCATION ARE YOU LOOKING FOR?', font=('Calibri', 30), fg='grey', bg='white')
+    text = Label(user, text='WHICH LOCATION ARE YOU LOOKING FOR?', font=('Calibri', 30), fg='black', bg='white')
     text.place(x=370, y=380)
     location = StringVar(user)
     location.set('Bijapur')
@@ -775,18 +782,20 @@ def page1(name, address, email, number):
     dropdown.config(width=20, font=('monospace', 15), fg="black")
     dropdown.place(x=590, y=450)
 
-    butt = Button(user, text='Submit', command=check, width=20, height=2)
-    butt.configure(fg="black", bg="#b7efcd", activebackground='#09baa7', activeforeground='#000000')
-    butt.place(x=645, y=550)
+    butt = Button(user, text='Submit', command=check, width=17, height=1,font=('Calibri', 15))
+    butt.configure(fg="black", bg="#09baa7", activebackground='#09baa7', activeforeground='#000000')
+    butt.place(x=630, y=550)
 
     #icons
-    icon1 = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\test.png")
+    icon1 = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\test.png")
     icon1_label = Label(user, image=icon1, bg='white')
     icon1_label.place(x=400, y=650)
-    icon2 = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\shoppingcart.png")
+    icon2 = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\shoppingcart.png")
     icon2_label = Label(user, image=icon2, bg='white')
     icon2_label.place(x=650, y=650)
-    icon3 = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\truck.png")
+    icon3 = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\truck.png")
     icon3_label = Label(user, image=icon3, bg='white')
     icon3_label.place(x=900, y=650)
     user.mainloop()
+
+# page1('test100', 'test', 'test', 8888888888)
