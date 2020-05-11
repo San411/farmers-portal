@@ -72,7 +72,7 @@ def users():
     address = Entry(u, width=30)
     address.place(x=450, y=260)
 
-    sub = Button(u, text="Register", width=15)
+    sub = Button(u, text="Register", width=15, command=insert)
     sub.place(x=480, y=300)
     u.mainloop()
     
@@ -181,6 +181,90 @@ def farmers():
 
     f.mainloop()
 
+
+def delivery():
+    #conn = sqlite3.connect('delivery.db')
+    #c = conn.cursor()
+    #c.execute("""CREATE TABLE delivery (name text, email text, number integer, password text, location text)""")
+    #conn.commit()
+    #conn.close()
+    u = Toplevel()
+    u.resizable(0, 0)
+    def insert():
+        a = []
+        conn = sqlite3.connect('delivery.db')
+        c = conn.cursor()
+        c.execute("SELECT email from delivery")
+        for i in c.fetchall():
+            a.append(i[0])
+        if (email.get() in a):
+            error_label = Label(u, text='Email already registered.', font=('Calibri', 15))
+            error_label.place(x=250, y=350)
+            conn.commit()
+            conn.close()
+
+        else:
+            c.execute("INSERT INTO delivery VALUES (:name, :email, :number, :password, :location)", {
+                    'name': name.get(),
+                    'email': email.get(),
+                    'number': number.get(),
+                    'password': password.get(),
+                    'location': radio.get()
+            })
+            conn.commit()
+            conn.close()
+            # clearing the entries
+            name.delete(0, END)
+            email.delete(0, END)
+            number.delete(0, END)
+            password.delete(0, END)
+
+            # displaying
+            result_label = Label(u, text='Registered, You will be contacted soon!', font=('Calibri', 15))
+            result_label.place(x=350, y=400)
+
+    u.geometry('700x500+400+150')
+    u.config(bg='white')
+    bg = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\deliver.png")
+    label = Label(u, image=bg)
+    label.place(x=-150, y=0)
+    title_label = Label(u, text='ENTER YOU DETAILS BELOW', font=('Calibri', 18), bg='white', fg='black')
+    title_label.place(x=370, y=20)
+    name_label = Label(u, text="Name", font=('Calibri', 14), bg='white', fg="black")
+    name_label.place(x=350, y=100)
+    email_label = Label(u, text="Email", font=('Calibri', 14), bg='white', fg="black")
+    email_label.place(x=350, y=140)
+    number_label = Label(u, text="Number", font=('Calibri', 14), bg='white', fg="black")
+    number_label.place(x=350, y=180)
+    pw_label = Label(u, text="Password", font=('Calibri', 14), bg='white', fg="black")
+    pw_label.place(x=350, y=220)
+
+    radio = StringVar(u)
+    radio.set("Bijapur")
+    location_label = Label(u, text='Location', font=('Calibri', 14), bg='white', fg='black')
+    location_label.place(x=350, y=260)
+    bijapur = Radiobutton(u, text="Bijapur", variable=radio, value='Bijapur', bg='white', fg='black')
+    bijapur.place(x=450, y=260)
+    bang_rural = Radiobutton(u, text="Bangalore Rural", variable=radio, value='Bangalore Rural', bg='white', fg='black')
+    bang_rural.place(x=450, y=280)
+    udupi = Radiobutton(u, text="Udupi", variable=radio, value='Udupi', bg='white', fg='black')
+    udupi.place(x=450, y=300)
+
+    # Entries
+    name = Entry(u, width=30)
+    name.place(x=450, y=100)
+    email = Entry(u, width=30)
+    email.place(x=450, y=140)
+    number = Entry(u, width=30)
+    number.place(x=450, y=180)
+    password = Entry(u, width=30, show='*')
+    password.place(x=450, y=220)
+
+    sub = Button(u, text="Register", width=15, command=insert)
+    sub.place(x=480, y=350)
+    u.mainloop()
+
+
 def signin():
     sign_window = Toplevel()
     sign_window.title("SIGN IN")
@@ -192,13 +276,17 @@ def signin():
         e = []
         n = []
         l = []
+        num = []
+        pref_l = []
         conn = sqlite3.connect('farmer.db')
         c = conn.cursor()
-        c.execute("SELECT email, name, location FROM farmer")
+        c.execute("SELECT email, name, location, number, pref_lang FROM farmer")
         for i in c.fetchall():
             e.append(i[0])
             n.append(i[1])
             l.append(i[2])
+            num.append(i[3])
+            pref_l.append(i[4])
         conn.commit()
         conn.close()
         sign_window.destroy()
@@ -206,7 +294,9 @@ def signin():
             if(em==e[x]):
                 name = n[x]
                 location = l[x]
-        farm_main.f(name, location)
+                number = num[x]
+                pref_lan = pref_l[x]
+        farm_main.f(name, location, em, number, pref_lan)
 
 
     def farm_window_check():
@@ -237,8 +327,28 @@ def signin():
 
     #function to open the main page
     def buyer_window():
+        em = email.get()
+        e = []
+        n = []
+        a = []
+        num = []
+        conn = sqlite3.connect('user.db')
+        c = conn.cursor()
+        c.execute("SELECT email, name, address, number FROM user")
+        for i in c.fetchall():
+            e.append(i[0])
+            n.append(i[1])
+            a.append(i[2])
+            num.append(i[3])
+        conn.commit()
+        conn.close()
         sign_window.destroy()
-        user_signin.page1()
+        for x in range(0, len(e)):
+            if (em == e[x]):
+                name = n[x]
+                location = a[x]
+                number = num[x]
+        user_signin.page1(name, location, em, number)
 
     #functions checks the email and password before opening main page
     def buyer_window_check():
