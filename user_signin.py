@@ -2,11 +2,12 @@ from tkinter import *
 import sqlite3
 import factor_code
 import datetime
-import test
-import sorting
+import notify_farmer
+
 #conn = sqlite3.connect('purchase.db')
 #c = conn.cursor()
 #c.execute("""CREATE TABLE purchase_bij (
+#        name text,
  #       email text,
  #       number integer,
  #       address text,
@@ -51,6 +52,11 @@ import sorting
 #        """)
 #conn.commit()
 #conn.close()
+
+#Delivery charges
+delivery_from_bij = {'Bijapur': 20, 'Udupi': 100, 'Bangalore Rural': 100}
+delivery_from_ban = {'Bijapur': 100, 'Udupi': 80, 'Bangalore Rural': 20}
+delivery_from_ud = {'Bijapur': 100, 'Udupi': 20, 'Bangalore Rural': 80}
 
 
 def basic_layout(location, name):
@@ -148,7 +154,7 @@ def check(value):
         return 0
 
 def bijapur(name, address, email, number):
-    factor_code.bijapur()
+    factor.bijapur()
     bij = basic_layout('BIJAPUR', name)
 
     def return_list(crop):
@@ -192,13 +198,52 @@ def bijapur(name, address, email, number):
 
         def deliver():
 
-
             def final():
-                lbl = Label(new, text='Thank you for shopping with us!\nYou will receive an email soon regarding the purchase.', font=('Britanic Bold', 12), bg='#222831', fg='white')
-                lbl.place(x=20, y=340)
-                date = int(variable_date.get())
+                seed()
+                mailcode = randint(10000, 99999)
+                sorting.email_verification(name, mailcode)
+
+                if (variable_date.get() == 'Today'):
+                    date = 0
+                elif (variable_date.get() == 'Tomorrow'):
+                    date = 1
+                elif (variable_date.get() == 'In a week'):
+                    date = 7
+                else:
+                    date = int(variable_date.get()[3])
                 delivery_status = radio.get()
-                sorting.email_verification()
+                final_price = 0.0
+                if (delivery_status == 'Yes'):
+                    final_price = delivery_from_bij[address.capitalize()]
+
+                verify_entry = Entry(new, width=10, font=('monospace', 10))
+                verify_entry.place(x=200, y=350)
+
+                verify_text = Label(new, text='Enter the verification code', font=('Britanic Bold', 15), bg='white',
+                                    fg='black')
+                verify_text.place(x=130, y=290)
+
+                def verification():
+                    veri = int(verify_entry.get())
+                    if veri != mailcode:
+                        fail_text = Label(new,
+                                          text='Incorrect code.Try again',
+                                          font=('Britanic Bold', 12), bg='black', fg='red')
+                        fail_text.place(x=200, y=370)
+                    else:
+                        success_text = Label(new,
+                                             text='Thank you for shopping with us!\nYou will receive an email soon regarding the purchase.',
+                                             font=('Britanic Bold', 12), bg='black', fg='green')
+                        success_text.place(x=50, y=370)
+
+                verify_button = Button(new, text='Verify', width=10, height=2, command=verification)
+                verify_button.place(x=200, y=420)
+
+            def no_delivery():
+                success_text = Label(new,
+                                     text='Thank you for shopping with us!\nYou will receive an email soon regarding the purchase.',
+                                     font=('Britanic Bold', 12), bg='white', fg='green')
+                success_text.place(x=50, y=370)
 
                 def store(crop, farmer_id, price, purchase_day, d):
 
@@ -234,51 +279,69 @@ def bijapur(name, address, email, number):
                     return p
 
                 def check_crop(crop, crop_name):
+                    price = 0.0
                     if(crop!='none'):
-                        price = 0.0
                         far_id = int(crop[0:1])
                         price = get_price(far_id)
                         store(crop_name, far_id, price, date, delivery_status)
+                    return price
 
+                final_price += check_crop(var_peas.get(), 'peas')
+                final_price += check_crop(var_wheat.get(), 'wheat')
+                final_price += check_crop(var_tur.get(), 'turmeric')
+                final_price += check_crop(var_maize.get(), 'maize')
+                final_price += check_crop(var_paddy.get(), 'paddy')
+                final_price += check_crop(var_mil.get(), 'millet')
+                final_price += check_crop(var_gn.get(), 'groundnut')
+                final_price += check_crop(var_bar.get(), 'sesame')
+                final_price += check_crop(var_ses.get(), 'barley')
+                final_price += check_crop(var_cot.get(), 'cotton')
 
-                check_crop(var_peas.get(), 'peas')
-                check_crop(var_wheat.get(), 'wheat')
-                check_crop(var_tur.get(), 'turmeric')
-                check_crop(var_maize.get(), 'maize')
-                check_crop(var_paddy.get(), 'paddy')
-                check_crop(var_mil.get(), 'millet')
-                check_crop(var_gn.get(), 'groundnut')
-                check_crop(var_bar.get(), 'sesame')
-                check_crop(var_ses.get(), 'barley')
-                check_crop(var_cot.get(), 'cotton')
+                #This stores the final price of the purchase
+                print(final_price)
 
+                #Send the email to the user after this using the above price
+
+                # Calls another module in which the sms to the farmer will be sent based on the date
+                notify_farmer.notify_bij()
+
+            #For the email verification and sending the final email
             new = Toplevel()
             new.geometry('400x400+500+250')
-            new.config(bg='white')
+            new.config(bg='#09baa7')
             new.resizable(0, 0)
 
-
-            radio_label = Label(new, text="Do you want the items to be delivered?", font=('Britanic Bold', 15), bg='white', fg='black')
+            #To ask if the delivery is needed or not
+            radio_label = Label(new, text="Do you want the items to be delivered?", font=('Britanic Bold', 15), bg='#09baa7', fg='#000000')
             radio_label.place(x=30, y=50)
             radio = StringVar(new)
             radio.set("Yes")
-            deliver_yes = Radiobutton(new, text="Yes", variable=radio, value='Yes', bg='#222831', fg='white')
+            deliver_yes = Radiobutton(new, text="Yes", variable=radio, value='Yes', bg='#09baa7', fg='white')
             deliver_yes.place(x=100, y=80)
-            deliver_no = Radiobutton(new, text="No", variable=radio, value='No', bg='#222831', fg='white')
+            deliver_no = Radiobutton(new, text="No", variable=radio, value='No', bg='#09baa7', fg='white')
             deliver_no.place(x=180, y=80)
 
-
-            delivery_date = Label(new, text='Preferred Pick up in number of days', font=('Britanic Bold', 15), bg='#222831', fg='white')
+            #Delivery date option changed to more user friendly inputs
+            delivery_date = Label(new, text='Preferred Pick up in number of days', font=('Britanic Bold', 15), bg='#09baa7', fg='#000000')
             delivery_date.place(x=30, y=150)
             variable_date = StringVar(new)
-            options_date = [0, 1, 2, 3, 4, 5, 6, 7]
+            options_date = ["Today", "Tomorrow", "In 2 days", "In 3 days", "In 4 days", "In 5 days", "In 6 days", "In a week"]
             variable_date.set(options_date[0])
             drop = OptionMenu(new, variable_date, *options_date)
             drop.config(width=5)
             drop.place(x=140, y=180)
-            place = Button(new, text='Confirm', width=10, height=2, command=final)
-            place.place(x=150, y=280)
-            #test.t()
+            date = int(variable_date.get())
+            delivery_status = radio.get()
+            if delivery_status == "Yes":
+                place = Button(new, text='Confirm', width=10, height=2, command=final)
+                place.place(x=200, y=420)
+            else:
+                place = Button(new, text='Confirm', width=10, height=2, command=no_delivery)
+                place.place(x=200, y=420)
+
+
+
+        #if there is some value in cart present then it changes the add_to_cart button to buy button
         if(cart_change!=0):
             add_to_cart.configure(text='Buy', command=deliver)
 
@@ -353,7 +416,7 @@ def bijapur(name, address, email, number):
     bij.mainloop()
 
 def bang(name, address, email, number):
-    factor_code.bangalore()
+    factor.bangalore()
     ban = basic_layout('BANGALORE  RURAL', name)
 
 
@@ -398,12 +461,23 @@ def bang(name, address, email, number):
         def deliver():
 
             def final():
-                lbl = Label(new, text='Thank you for shopping with us!\nYou will receive an email soon regarding the purchase.', font=('Britanic Bold', 12), bg='#222831', fg='white')
-                lbl.place(x=20, y=340)
-                date = int(variable_date.get())
+                # lbl = Label(new, text='Thank you for shopping with us!\nYou will receive an email soon regarding the purchase.', font=('Britanic Bold', 12), bg='#222831', fg='white')
+                # lbl.place(x=20, y=340)
+                label_entry = Entry(new, width=15)
+                label_entry.place(x=100, y=240)
+                place.configure(text='Check code')
+                if (variable_date.get() == 'Today'):
+                    date = 0
+                elif (variable_date.get() == 'Tomorrow'):
+                    date = 1
+                elif (variable_date.get() == 'In a week'):
+                    date = 7
+                else:
+                    date = int(variable_date.get()[3])
                 delivery_status = radio.get()
-
-
+                final_price = 0.0
+                if (delivery_status == 'Yes'):
+                    final_price = delivery_from_ban[address.capitalize()]
                 def store(crop, farmer_id, price, purchase_day, d):
 
                     delivery_day = datetime.date.today() + datetime.timedelta(days=purchase_day)
@@ -438,22 +512,31 @@ def bang(name, address, email, number):
                     return p
 
                 def check_crop(crop, crop_name):
+                    price = 0.0
                     if (crop != 'none'):
-                        price = 0.0
                         far_id = int(crop[0:1])
                         price = get_price(far_id)
                         store(crop_name, far_id, price, date, delivery_status)
+                    return price
 
-                check_crop(var_peas.get(), 'peas')
-                check_crop(var_wheat.get(), 'wheat')
-                check_crop(var_tur.get(), 'turmeric')
-                check_crop(var_maize.get(), 'maize')
-                check_crop(var_paddy.get(), 'paddy')
-                check_crop(var_mil.get(), 'millet')
-                check_crop(var_gn.get(), 'groundnut')
-                check_crop(var_bar.get(), 'sesame')
-                check_crop(var_ses.get(), 'barley')
-                check_crop(var_cot.get(), 'cotton')
+                final_price += check_crop(var_peas.get(), 'peas')
+                final_price += check_crop(var_wheat.get(), 'wheat')
+                final_price += check_crop(var_tur.get(), 'turmeric')
+                final_price += check_crop(var_maize.get(), 'maize')
+                final_price += check_crop(var_paddy.get(), 'paddy')
+                final_price += check_crop(var_mil.get(), 'millet')
+                final_price += check_crop(var_gn.get(), 'groundnut')
+                final_price += check_crop(var_bar.get(), 'sesame')
+                final_price += check_crop(var_ses.get(), 'barley')
+                final_price += check_crop(var_cot.get(), 'cotton')
+
+                # This stores the final price of the purchase
+                print(final_price)
+
+                # Send the email to the user after this using the above price
+
+                # Calls another module in which the sms to the farmer will be sent based on the date
+                notify_farmer.notify_ban()
 
             new = Toplevel()
             new.geometry('400x400+500+250')
@@ -474,15 +557,15 @@ def bang(name, address, email, number):
                                   bg='#222831', fg='white')
             delivery_date.place(x=30, y=150)
             variable_date = StringVar(new)
-            options_date = [0, 1, 2, 3, 4, 5, 6, 7]
+            options_date = ["Today", "Tomorrow", "In 2 days", "In 3 days", "In 4 days", "In 5 days", "In 6 days", "In a week"]
             variable_date.set(options_date[0])
             drop = OptionMenu(new, variable_date, *options_date)
             drop.config(width=5)
             drop.place(x=140, y=180)
             place = Button(new, text='Confirm', width=10, height=2, command=final)
             place.place(x=150, y=280)
-            user_name = name.get()
-            sorting.email_verification(user_name)
+
+
         if (cart_change != 0):
             add_to_cart.configure(text='Buy', command=deliver)
 
@@ -553,7 +636,7 @@ def bang(name, address, email, number):
     ban.mainloop()
 
 def udupi(name, address, email, number):
-    factor_code.udupi()
+    factor.udupi()
     ud = basic_layout('UDUPI', name)
 
     def return_list(crop):
@@ -596,11 +679,23 @@ def udupi(name, address, email, number):
         def deliver():
 
             def final():
-                lbl = Label(new, text='Thank you for shopping with us!\nYou will receive an email soon regarding the purchase.', font=('Britanic Bold', 12), bg='#222831', fg='white')
-                lbl.place(x=20, y=340)
-                date = int(variable_date.get())
+                # lbl = Label(new, text='Thank you for shopping with us!\nYou will receive an email soon regarding the purchase.', font=('Britanic Bold', 12), bg='#222831', fg='white')
+                # lbl.place(x=20, y=340)
+                label_entry = Entry(new, width=15)
+                label_entry.place(x=100, y=240)
+                place.configure(text='Check code')
+                if (variable_date.get() == 'Today'):
+                    date = 0
+                elif (variable_date.get() == 'Tomorrow'):
+                    date = 1
+                elif (variable_date.get() == 'In a week'):
+                    date = 7
+                else:
+                    date = int(variable_date.get()[3])
                 delivery_status = radio.get()
-
+                final_price = 0.0
+                if (delivery_status == 'Yes'):
+                    final_price = delivery_from_ud[address.capitalize()]
                 def store(crop, farmer_id, price, purchase_day, d):
 
                     delivery_day = datetime.date.today() + datetime.timedelta(days=purchase_day)
@@ -635,22 +730,31 @@ def udupi(name, address, email, number):
                     return p
 
                 def check_crop(crop, crop_name):
+                    price = 0.0
                     if (crop != 'none'):
-                        price = 0.0
                         far_id = int(crop[0:1])
                         price = get_price(far_id)
                         store(crop_name, far_id, price, date, delivery_status)
+                    return price
 
-                check_crop(var_peas.get(), 'peas')
-                check_crop(var_wheat.get(), 'wheat')
-                check_crop(var_tur.get(), 'turmeric')
-                check_crop(var_maize.get(), 'maize')
-                check_crop(var_paddy.get(), 'paddy')
-                check_crop(var_mil.get(), 'millet')
-                check_crop(var_gn.get(), 'groundnut')
-                check_crop(var_bar.get(), 'sesame')
-                check_crop(var_ses.get(), 'barley')
-                check_crop(var_cot.get(), 'cotton')
+                final_price += check_crop(var_peas.get(), 'peas')
+                final_price += check_crop(var_wheat.get(), 'wheat')
+                final_price += check_crop(var_tur.get(), 'turmeric')
+                final_price += check_crop(var_maize.get(), 'maize')
+                final_price += check_crop(var_paddy.get(), 'paddy')
+                final_price += check_crop(var_mil.get(), 'millet')
+                final_price += check_crop(var_gn.get(), 'groundnut')
+                final_price += check_crop(var_bar.get(), 'sesame')
+                final_price += check_crop(var_ses.get(), 'barley')
+                final_price += check_crop(var_cot.get(), 'cotton')
+
+                # This stores the final price of the purchase
+                print(final_price)
+
+                # Send the email to the user after this using the above price
+
+                # Calls another module in which the sms to the farmer will be sent based on the date
+                notify_farmer.notify_udupi()
 
             new = Toplevel()
             new.geometry('400x400+500+250')
@@ -671,14 +775,14 @@ def udupi(name, address, email, number):
                                   bg='#222831', fg='white')
             delivery_date.place(x=30, y=150)
             variable_date = StringVar(new)
-            options_date = [0, 1, 2, 3, 4, 5, 6, 7]
+            options_date = ["Today", "Tomorrow", "In 2 days", "In 3 days", "In 4 days", "In 5 days", "In 6 days", "In a week"]
             variable_date.set(options_date[0])
             drop = OptionMenu(new, variable_date, *options_date)
             drop.config(width=5)
             drop.place(x=140, y=180)
             place = Button(new, text='Confirm', width=10, height=2, command=final)
             place.place(x=150, y=280)
-            #test.t()
+
         if (cart_change != 0):
             add_to_cart.configure(text='Buy', command=deliver)
 
@@ -727,7 +831,6 @@ def udupi(name, address, email, number):
     var_bar = StringVar(ud)
     option_bar = return_list('barley')
     var_bar.set(option_bar[0])
-
     drop_bar = OptionMenu(ud, var_bar, *option_bar)
     drop_bar.place(x=670, y=670)
 
@@ -771,9 +874,9 @@ def page1(name, address, email, number):
     label = Label(user, image=bg)
     label.image = bg
     label.pack()
-    title = Label(user, text='SEARCH.    FIND.    BUY.', font=('Britannic Bold', 70), bg='#09baa7', fg='white')
+    title = Label(user, text='SEARCH.    FIND.    BUY.', font=('Britannic Bold', 70), bg='#09baa7', fg='grey')
     title.place(x=270, y=100)
-    text = Label(user, text='WHICH LOCATION ARE YOU LOOKING FOR?', font=('Calibri', 30), fg='black', bg='white')
+    text = Label(user, text='WHICH LOCATION ARE YOU LOOKING FOR?', font=('Calibri', 30), fg='grey', bg='white')
     text.place(x=370, y=380)
     location = StringVar(user)
     location.set('Bijapur')
@@ -782,7 +885,7 @@ def page1(name, address, email, number):
     dropdown.config(width=20, font=('monospace', 15), fg="black")
     dropdown.place(x=590, y=450)
 
-    butt = Button(user, text='Submit', command=check, width=17, height=1,font=('Calibri', 15))
+    butt = Button(user, text='Submit', command=check, width=17, height=1, font=('Calibri', 15))
     butt.configure(fg="black", bg="#09baa7", activebackground='#09baa7', activeforeground='#000000')
     butt.place(x=630, y=550)
 
@@ -797,5 +900,3 @@ def page1(name, address, email, number):
     icon3_label = Label(user, image=icon3, bg='white')
     icon3_label.place(x=900, y=650)
     user.mainloop()
-
-# page1('test100', 'test', 'test', 8888888888)
