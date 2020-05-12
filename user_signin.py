@@ -1,10 +1,11 @@
 from tkinter import *
 import sqlite3
-import factor
+import factor_code
 import datetime
 import notify_farmer
 import smtplib
 import random
+import email_module
 # conn = sqlite3.connect('purchase.db')
 # c = conn.cursor()
 # c.execute("""CREATE TABLE purchase_bij (
@@ -34,7 +35,7 @@ def basic_layout(location, name):
     root.state('zoomed')
     root.resizable(0, 0)
     root.config(bg='white')
-    green = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\green.png")
+    green = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\green.png")
     label = Label(root, image=green)
     label.image = green
     label.place(x=0, y=-220)
@@ -50,16 +51,17 @@ def basic_layout(location, name):
     amount.place(x=1370, y=70)
 
     # images
-    pea = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\peas.png")
-    wheat = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\wheat.png")
-    tur = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\turmeric.png")
-    maize = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\maize.png")
-    pad = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\paddy.png")
-    millet = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\millet.png")
-    gn = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\gn.png")
-    sesame = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\sesame.png")
-    barley = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\barley.png")
-    cotton = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\cotton.png")
+    pea = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\peas.png")
+    wheat = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\wheat.png")
+    tur = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\turmeric.png")
+    maize = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\maize.png")
+    pad = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\paddy.png")
+    millet = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\millet.png")
+    gn = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\gn.png")
+    gn = gn.subsample(3, 3)
+    sesame = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\sesame.png")
+    barley = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\barley.png")
+    cotton = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\cotton.png")
 
     # Label for images
     pea_label = Label(root, image=pea, bg='white')
@@ -121,7 +123,7 @@ def check(value):
         return 0
 
 def bijapur(name, address, email, number):
-    factor.bijapur()
+    factor_code.bijapur()
     bij = basic_layout('BIJAPUR', name)
 
     def return_list(crop):
@@ -166,17 +168,8 @@ def bijapur(name, address, email, number):
         def deliver():
             def final():
                 code = random.randint(1000,9999)
-                with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
-                    smtp.ehlo()
-                    smtp.starttls()
-                    smtp.ehlo()
+                email_module.email(email,code)
 
-                    smtp.login('karfarmersportal@gmail.com', 'anscrjyzxvwhwmaw')
-                    subject = 'Verification Code'
-                    body = 'Your verification code is '+ str(code)
-                    message = f'Subject: {subject}\n\n{body}'
-
-                    smtp.sendmail('karfarmersportal@gmail.com', 'karfarmersportal@gmail.com', message)
                 label_entry = Entry(new, width=30)
                 label_entry.place(x=130, y=240)
 
@@ -250,19 +243,12 @@ def bijapur(name, address, email, number):
                     if(code==int(label_entry.get())):
                         lbl = Label(new, text='Thank you for shopping with us!\nYou will receive an email soon regarding your purchase.', font=('Britanic Bold', 12), bg='#dddddd', fg='black')
                         lbl.place(x=20, y=340)
-                        with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
-                            smtp.ehlo()
-                            smtp.starttls()
-                            smtp.ehlo()
+                        email_module.actualemail(email,final_price,name)
 
-                            smtp.login('karfarmersportal@gmail.com', 'anscrjyzxvwhwmaw')
-                            subject = 'Purchase details'
-                            body = 'Thank you for shopping with us ' + name + '! Your final amount is Rs. ' + str(final_price)
-                            message = f'Subject: {subject}\n\n{body}'
-                            smtp.sendmail('karfarmersportal@gmail.com', 'karfarmersportal@gmail.com', message)
 
                     else:
-                        print('error, try again')
+                        print('Incorrect code.Try again')
+
                 place.configure(text='Verify code', command=verify)
 
                 # Send the email to the user after this using the above price
@@ -371,7 +357,7 @@ def bijapur(name, address, email, number):
     bij.mainloop()
 
 def bang(name, address, email, number):
-    factor.bangalore()
+    factor_code.bangalore()
     ban = basic_layout('BANGALORE  RURAL', name)
 
     def return_list(crop):
@@ -590,7 +576,7 @@ def bang(name, address, email, number):
     ban.mainloop()
 
 def udupi(name, address, email, number):
-    factor.udupi()
+    factor_code.udupi()
     ud = basic_layout('UDUPI', name)
 
     def return_list(crop):
@@ -825,7 +811,7 @@ def page1(name, address, email, number):
     user.resizable(0, 0)
     user.title('MAIN PAGE')
     user.config(bg='white')
-    bg = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\green.png")
+    bg = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\green.png")
     label = Label(user, image=bg)
     label.image = bg
     label.pack()
@@ -845,14 +831,14 @@ def page1(name, address, email, number):
     butt.place(x=630, y=550)
 
     #icons
-    icon1 = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\test.png")
+    icon1 = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\test.png")
     icon1_label = Label(user, image=icon1, bg='white')
     icon1_label.place(x=400, y=650)
-    icon2 = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\shoppingcart.png")
+    icon2 = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\shoppingcart.png")
     icon2_label = Label(user, image=icon2, bg='white')
     icon2_label.place(x=650, y=650)
-    icon3 = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\truck.png")
+    icon3 = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\truck.png")
     icon3_label = Label(user, image=icon3, bg='white')
     icon3_label.place(x=900, y=650)
     user.mainloop()
-page1('Riya', 'bijapur', 'rieee2110@gmail.com','9765153637')
+# page1('Riya', 'bijapur', 'rieee2110@gmail.com','9765153637')
