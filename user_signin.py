@@ -1,59 +1,28 @@
 from tkinter import *
 import sqlite3
-import factor_code
+import factor
 import datetime
 import notify_farmer
-
-#conn = sqlite3.connect('purchase.db')
-#c = conn.cursor()
-#c.execute("""CREATE TABLE purchase_bij (
+import smtplib
+import random
+# conn = sqlite3.connect('purchase.db')
+# c = conn.cursor()
+# c.execute("""CREATE TABLE purchase_bij (
 #        name text,
- #       email text,
- #       number integer,
- #       address text,
- #       crop text,
- #       farmer_id integer,
- #       price real,
- #       purchase_day integer,
+#       email text,
+#       number integer,
+#       address text,
+#       crop text,
+#       farmer_id integer,
+#       price real,
+#       purchase_day integer,
 #        delivery_date text,
 #        delivery text)
 #        """)
-#conn.commit()
-#conn.close()
-#conn = sqlite3.connect('purchase.db')
-#c = conn.cursor()
-#c.execute("""CREATE TABLE purchase_ud (
-#        name text,
-#       email text,
-#        number integer,
-#       address text,
-#      crop text,
-#        farmer_id integer,
-#        price real,
-#        purchase_day integer,
-#       delivery_date text,
-#       delivery text)
-#        """)
-#conn.commit()
-#conn.close()
-#conn = sqlite3.connect('purchase.db')
-#c = conn.cursor()
-#c.execute("""CREATE TABLE purchase_ban (
-#        name text,
-#       email text,
-#        number integer,
-#       address text,
-#      crop text,
-#        farmer_id integer,
-#        price real,
-#        purchase_day integer,
-#       delivery_date text,
-#       delivery text)
-#        """)
-#conn.commit()
-#conn.close()
+# conn.commit()
+# conn.close()
 
-#Delivery charges
+# Delivery charges
 delivery_from_bij = {'Bijapur': 20, 'Udupi': 100, 'Bangalore Rural': 100}
 delivery_from_ban = {'Bijapur': 100, 'Udupi': 80, 'Bangalore Rural': 20}
 delivery_from_ud = {'Bijapur': 100, 'Udupi': 20, 'Bangalore Rural': 80}
@@ -64,8 +33,8 @@ def basic_layout(location, name):
     root.title(location)
     root.state('zoomed')
     root.resizable(0, 0)
-    root.config(bg = 'white')
-    green = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\green.png")
+    root.config(bg='white')
+    green = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\green.png")
     label = Label(root, image=green)
     label.image = green
     label.place(x=0, y=-220)
@@ -80,20 +49,19 @@ def basic_layout(location, name):
     amount = Label(root, text=str(cart_value), font=('Britanic Bold', 14), bg="#09baa7", fg='white')
     amount.place(x=1370, y=70)
 
-    #images
-    pea = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\peas.png")
-    wheat = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\wheat.png")
-    tur = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\turmeric.png")
-    maize = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\maize.png")
-    pad = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\paddy.png")
-    millet = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\millet.png")
-    gn = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\gn.png")
-    gn = gn.subsample(1, 1)
-    sesame = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\sesame.png")
-    barley = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\barley.png")
-    cotton = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\crop images\cotton.png")
+    # images
+    pea = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\peas.png")
+    wheat = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\wheat.png")
+    tur = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\turmeric.png")
+    maize = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\maize.png")
+    pad = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\paddy.png")
+    millet = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\millet.png")
+    gn = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\gn.png")
+    sesame = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\sesame.png")
+    barley = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\barley.png")
+    cotton = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\cotton.png")
 
-    #Label for images
+    # Label for images
     pea_label = Label(root, image=pea, bg='white')
     pea_label.place(x=50, y=200)
     pea_label.image = pea
@@ -125,14 +93,13 @@ def basic_layout(location, name):
     cotton_label.place(x=1290, y=500)
     cotton_label.image = cotton
 
-    #text labels
+    # text labels
     pea_text = Label(root, text='Peas', font=('monospace', 15), bg='white', fg='black')
     pea_text.place(x=50, y=315)
     wheat_text = Label(root, text='Wheat', font=('monospace', 15), bg='white', fg='black')
     wheat_text.place(x=360, y=315)
     tur_text = Label(root, text='Turmeric', font=('monospace', 15), bg='white', fg='black')
     tur_text.place(x=670, y=315)
-    maize_text = Label(root, text='Maize', font=('monospace', 15), bg='white', fg='black')
     pad_text = Label(root, text='Paddy', font=('monospace', 15), bg='white', fg='black')
     pad_text.place(x=1290, y=315)
     millet_text = Label(root, text='Millet', font=('monospace', 15), bg='white', fg='black')
@@ -163,7 +130,7 @@ def bijapur(name, address, email, number):
         price = []
         conn = sqlite3.connect('crop.db')
         c = conn.cursor()
-        c.execute("SELECT id,name,price FROM bijapur WHERE crop= ?",(crop,))
+        c.execute("SELECT id,name,price FROM bijapur WHERE crop= ?", (crop,))
         for i in c.fetchall():
             id.append(i[0])
             name.append(i[1])
@@ -197,53 +164,34 @@ def bijapur(name, address, email, number):
         new_amount.place(x=1370, y=70)
 
         def deliver():
-
             def final():
-                seed()
-                mailcode = randint(10000, 99999)
-                sorting.email_verification(name, mailcode)
+                code = random.randint(1000,9999)
+                with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+                    smtp.ehlo()
+                    smtp.starttls()
+                    smtp.ehlo()
 
-                if (variable_date.get() == 'Today'):
+                    smtp.login('karfarmersportal@gmail.com', 'anscrjyzxvwhwmaw')
+                    subject = 'Verification Code'
+                    body = 'Your verification code is '+ str(code)
+                    message = f'Subject: {subject}\n\n{body}'
+
+                    smtp.sendmail('karfarmersportal@gmail.com', 'karfarmersportal@gmail.com', message)
+                label_entry = Entry(new, width=30)
+                label_entry.place(x=130, y=240)
+
+                if variable_date.get() == 'Today':
                     date = 0
-                elif (variable_date.get() == 'Tomorrow'):
+                elif variable_date.get() == 'Tomorrow':
                     date = 1
-                elif (variable_date.get() == 'In a week'):
+                elif variable_date.get() == 'In a week':
                     date = 7
                 else:
                     date = int(variable_date.get()[3])
                 delivery_status = radio.get()
                 final_price = 0.0
-                if (delivery_status == 'Yes'):
+                if delivery_status == 'Yes':
                     final_price = delivery_from_bij[address.capitalize()]
-
-                verify_entry = Entry(new, width=10, font=('monospace', 10))
-                verify_entry.place(x=200, y=350)
-
-                verify_text = Label(new, text='Enter the verification code', font=('Britanic Bold', 15), bg='white',
-                                    fg='black')
-                verify_text.place(x=130, y=290)
-
-                def verification():
-                    veri = int(verify_entry.get())
-                    if veri != mailcode:
-                        fail_text = Label(new,
-                                          text='Incorrect code.Try again',
-                                          font=('Britanic Bold', 12), bg='black', fg='red')
-                        fail_text.place(x=200, y=370)
-                    else:
-                        success_text = Label(new,
-                                             text='Thank you for shopping with us!\nYou will receive an email soon regarding the purchase.',
-                                             font=('Britanic Bold', 12), bg='black', fg='green')
-                        success_text.place(x=50, y=370)
-
-                verify_button = Button(new, text='Verify', width=10, height=2, command=verification)
-                verify_button.place(x=200, y=420)
-
-            def no_delivery():
-                success_text = Label(new,
-                                     text='Thank you for shopping with us!\nYou will receive an email soon regarding the purchase.',
-                                     font=('Britanic Bold', 12), bg='white', fg='green')
-                success_text.place(x=50, y=370)
 
                 def store(crop, farmer_id, price, purchase_day, d):
 
@@ -297,54 +245,62 @@ def bijapur(name, address, email, number):
                 final_price += check_crop(var_ses.get(), 'barley')
                 final_price += check_crop(var_cot.get(), 'cotton')
 
-                #This stores the final price of the purchase
-                print(final_price)
+                # This stores the final price of the purchase
+                def verify():
+                    if(code==int(label_entry.get())):
+                        lbl = Label(new, text='Thank you for shopping with us!\nYou will receive an email soon regarding your purchase.', font=('Britanic Bold', 12), bg='#dddddd', fg='black')
+                        lbl.place(x=20, y=340)
+                        with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+                            smtp.ehlo()
+                            smtp.starttls()
+                            smtp.ehlo()
 
-                #Send the email to the user after this using the above price
+                            smtp.login('karfarmersportal@gmail.com', 'anscrjyzxvwhwmaw')
+                            subject = 'Purchase details'
+                            body = 'Thank you for shopping with us ' + name + '! Your final amount is Rs. ' + str(final_price)
+                            message = f'Subject: {subject}\n\n{body}'
+                            smtp.sendmail('karfarmersportal@gmail.com', 'karfarmersportal@gmail.com', message)
+
+                    else:
+                        print('error, try again')
+                place.configure(text='Verify code', command=verify)
+
+                # Send the email to the user after this using the above price
 
                 # Calls another module in which the sms to the farmer will be sent based on the date
                 notify_farmer.notify_bij()
 
-            #For the email verification and sending the final email
+            # For the email verification and sending the final email
             new = Toplevel()
-            new.geometry('400x400+500+250')
-            new.config(bg='#09baa7')
+            new.geometry('450x400+500+250')
+            new.config(bg='#dddddd')
             new.resizable(0, 0)
 
-            #To ask if the delivery is needed or not
-            radio_label = Label(new, text="Do you want the items to be delivered?", font=('Britanic Bold', 15), bg='#09baa7', fg='#000000')
-            radio_label.place(x=30, y=50)
+            # To ask if the delivery is needed or not
+            radio_label = Label(new, text="Do you want the items to be delivered?", font=('Britanic Bold', 14), bg='#dddddd', fg='#000000')
+            radio_label.place(x=50, y=50)
             radio = StringVar(new)
             radio.set("Yes")
-            deliver_yes = Radiobutton(new, text="Yes", variable=radio, value='Yes', bg='#09baa7', fg='white')
+            deliver_yes = Radiobutton(new, text="Yes", variable=radio, value='Yes', bg='#dddddd', fg='black')
             deliver_yes.place(x=100, y=80)
-            deliver_no = Radiobutton(new, text="No", variable=radio, value='No', bg='#09baa7', fg='white')
+            deliver_no = Radiobutton(new, text="No", variable=radio, value='No', bg='#dddddd', fg='black')
             deliver_no.place(x=180, y=80)
 
-            #Delivery date option changed to more user friendly inputs
-            delivery_date = Label(new, text='Preferred Pick up in number of days', font=('Britanic Bold', 15), bg='#09baa7', fg='#000000')
-            delivery_date.place(x=30, y=150)
+            # Delivery date option changed to more user friendly inputs
+            delivery_date = Label(new, text='Preferred Pick up in number of days', font=('Britanic Bold', 14), bg='#dddddd', fg='#000000')
+            delivery_date.place(x=50, y=140)
             variable_date = StringVar(new)
             options_date = ["Today", "Tomorrow", "In 2 days", "In 3 days", "In 4 days", "In 5 days", "In 6 days", "In a week"]
             variable_date.set(options_date[0])
             drop = OptionMenu(new, variable_date, *options_date)
-            drop.config(width=5)
+            drop.config(width=15)
             drop.place(x=140, y=180)
-            date = int(variable_date.get())
-            delivery_status = radio.get()
-            if delivery_status == "Yes":
-                place = Button(new, text='Confirm', width=10, height=2, command=final)
-                place.place(x=200, y=420)
-            else:
-                place = Button(new, text='Confirm', width=10, height=2, command=no_delivery)
-                place.place(x=200, y=420)
+            place = Button(new, text='Confirm email', width=13, height=2, command=final)
+            place.place(x=160, y=280)
 
-
-
-        #if there is some value in cart present then it changes the add_to_cart button to buy button
+        # if there is some value in cart present then it changes the add_to_cart button to buy button
         if(cart_change!=0):
             add_to_cart.configure(text='Buy', command=deliver)
-
 
     var_peas = StringVar(bij)
     option_peas = return_list('peas')
@@ -406,7 +362,6 @@ def bijapur(name, address, email, number):
     drop_cot = OptionMenu(bij, var_cot, *option_cot)
     drop_cot.place(x=1290, y=670)
 
-
     add_to_cart = Button(bij, text='Add to Cart', width=15, height=2, command=show)
     add_to_cart.place(x=600, y=750)
 
@@ -418,7 +373,6 @@ def bijapur(name, address, email, number):
 def bang(name, address, email, number):
     factor.bangalore()
     ban = basic_layout('BANGALORE  RURAL', name)
-
 
     def return_list(crop):
         id = []
@@ -865,12 +819,13 @@ def page1(name, address, email, number):
         else:
             user.destroy()
             bang(name, address, email, number)
+
     user = Toplevel()
     user.state('zoomed')
     user.resizable(0, 0)
     user.title('MAIN PAGE')
     user.config(bg='white')
-    bg = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\green.png")
+    bg = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\green.png")
     label = Label(user, image=bg)
     label.image = bg
     label.pack()
@@ -890,13 +845,14 @@ def page1(name, address, email, number):
     butt.place(x=630, y=550)
 
     #icons
-    icon1 = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\test.png")
+    icon1 = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\test.png")
     icon1_label = Label(user, image=icon1, bg='white')
     icon1_label.place(x=400, y=650)
-    icon2 = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\shoppingcart.png")
+    icon2 = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\shoppingcart.png")
     icon2_label = Label(user, image=icon2, bg='white')
     icon2_label.place(x=650, y=650)
-    icon3 = PhotoImage(file=r"C:\Users\sandesh\Documents\ADA Project\truck.png")
+    icon3 = PhotoImage(file=r"C:\Users\Riya Savant\PycharmProjects\ADA\image\truck.png")
     icon3_label = Label(user, image=icon3, bg='white')
     icon3_label.place(x=900, y=650)
     user.mainloop()
+page1('Riya', 'bijapur', 'rieee2110@gmail.com','9765153637')
