@@ -1,10 +1,10 @@
 # Python3 program to perform TimSort.
-RUN = 32# Tim Sort splits the data into runs between 32 and 64 because here the Binary Insertion Sort works best
-
+RUN = 32
+# Tim Sort splits the data into runs between 32 and 64 because here the Binary Insertion Sort works best
 
 # This function sorts array from left index
 # to right index which is of size at most RUN
-def insertionSort(arr, left, right):#Binary Insertion Sort
+def insertionSort(arr, left, right): # Binary Insertion Sort
     for i in range(left + 1, right + 1):
 
         temp = arr[i]
@@ -14,8 +14,6 @@ def insertionSort(arr, left, right):#Binary Insertion Sort
             j -= 1
 
         arr[j + 1] = temp
-
-
 
     # merge function merges the sorted runs
 def merge(arr, l, m, r):
@@ -55,7 +53,6 @@ def merge(arr, l, m, r):
         k += 1
         j += 1
 
-
 # iterative Timsort function to sort the
 # array[0...n-1] (similar to merge sort)
 def timSort(arr, n):
@@ -83,24 +80,3 @@ def timSort(arr, n):
             merge(arr, left, mid, right)
 
         size = 2 * size
-
-    # utility function to print the Array
-
-
-def printArray(arr, n):
-    for i in range(0, n):
-        print(arr[i], end=" ")
-    print()
-
-
-# Driver program to test above function
-if __name__ == "__main__":
-    arr = [5, 21, 7, 23, 19]
-    n = len(arr)
-    print("Given Array is")
-    printArray(arr, n)
-
-    timSort(arr, n)
-
-    print("After Sorting Array is")
-    printArray(arr, n)
