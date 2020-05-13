@@ -1,39 +1,40 @@
 from bs4 import BeautifulSoup
 import requests
-import timsort
-#Function to webscrape data
-def scrape(content,cl):
-    d=[]
-    for i in content.find('div', {"class": cl}).select("td")[2:13:2]:
-        d.append(i.getText())
-    return timsort.timSort(d, len(d))
-#For Rabi crops
-url= 'https://farmers-portal.github.io/farmsite/rabi.html'
-response = requests.get(url, timeout=5)
-content = BeautifulSoup(response.content, "html.parser")
-base_price = {}
-base_price['wheat'] = scrape(content,"first")
-base_price['barley'] = scrape(content,"barl")
-base_price['mustard'] = scrape(content,"must")
-base_price['peas'] = scrape(content,"pea")
-base_price['sesame'] = scrape(content,"bottom")
 
-#For Kharif crops
-urlk= 'https://farmers-portal.github.io/farmsite/kharif.html'
-res = requests.get(urlk, timeout=5)
-cont = BeautifulSoup(res.content , "html.parser")
+# Function to webscrape data
+def scrape(content, cl, index):
+    for i in content.find('div', {"class": cl}).select("td")[index]:
+        return int(i)
 
-base_price['millet'] = scrape(cont,"first")
-base_price['paddy'] = scrape(cont,"pad")
-base_price['maize'] = scrape(cont,"mai")
-base_price['sugarcane'] = scrape(cont,"sugar")
-base_price['soyabean'] = scrape(cont,"soy")
-base_price['groundnut'] = scrape(cont,"gn")
-base_price['cotton'] = scrape(cont,"cot")
-base_price['cashew'] = scrape(cont,"bottom")
-base_price['turmeric'] = scrape(cont,"tur")
+def repeat(index):
+    url = 'https://farmers-portal.github.io/farmsite/rabi.html'
+    response = requests.get(url)
+    content = BeautifulSoup(response.content, "html.parser")
+    urlk = 'https://farmers-portal.github.io/farmsite/kharif.html'
+    res = requests.get(urlk)
+    cont = BeautifulSoup(res.content, "html.parser")
 
-print(base_price)
+    b_prices = {}
+    b_prices['wheat'] = scrape(content, "first", index)
+    b_prices['barley'] = scrape(content, "barl", index)
+    b_prices['mustard'] = scrape(content, "must", index)
+    b_prices['peas'] = scrape(content, "pea", index)
+    b_prices['sesame'] = scrape(content, "bottom", index)
+    b_prices['millet'] = scrape(cont, "first", index)
+    b_prices['paddy'] = scrape(cont, "pad", index)
+    b_prices['maize'] = scrape(cont, "mai", index)
+    b_prices['sugarcane'] = scrape(cont, "sugar", index)
+    b_prices['soyabean'] = scrape(cont, "soy", index)
+    b_prices['groundnut'] = scrape(cont, "gn", index)
+    b_prices['cotton'] = scrape(cont, "cot", index)
+    b_prices['cashew'] = scrape(cont, "bottom", index)
+    b_prices['turmeric'] = scrape(cont, "tur", index)
 
+    return b_prices
 
-
+bij_price = {}
+u_price = {}
+bang_price = {}
+bij_price = repeat(2)
+u_price = repeat(4)
+bang_price = repeat(6)
