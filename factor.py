@@ -26,17 +26,14 @@ def price_reduction(investment, profit):
 def calculate_price(ratio, location, crop):
     if(location=='Bijapur'):
         base = bij[crop]
-        print('base: ',base)
         final = base - ((base*ratio)/100)
         return final
     elif(location=='Udupi'):
         base = ud[crop]
-        print('base: ', base)
         final = base - ((base*ratio)/100)
         return final
     else:
         base = bang[crop]
-        print('base: ', base)
         final = base - ((base * ratio) / 100)
         return final
 
@@ -49,7 +46,6 @@ def bijapur():
         index = i[0]
         ratio = price_reduction(i[2],i[3])
         final_price = calculate_price(ratio, 'Bijapur', i[1])
-        print(index,final_price)
         c.execute("UPDATE bijapur SET price= ? WHERE id= ?",(final_price,index))
     conn.commit()
     conn.close()
@@ -62,7 +58,6 @@ def udupi():
         index = i[0]
         ratio = price_reduction(i[2],i[3])
         final_price = calculate_price(ratio, 'Udupi', i[1])
-        print(final_price)
         c.execute("UPDATE udupi SET price= ? WHERE id= ?", (final_price, index))
     conn.commit()
     conn.close()
@@ -75,12 +70,7 @@ def bangalore():
         index = i[0]
         ratio = price_reduction(i[2],i[3])
         final_price = calculate_price(ratio, 'Bangalore rural', i[1])
-        print(final_price)
         c.execute("UPDATE bangalore SET price= ? WHERE id= ?", (final_price, index))
     conn.commit()
     conn.close()
 
-
-bijapur()
-udupi()
-bangalore()
