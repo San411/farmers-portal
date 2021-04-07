@@ -1,0 +1,39 @@
+Metadata-Version: 2.0
+Name: googletranslate
+Version: 2.1.2
+Summary: Free Google Translate API for Python. Translates totally free of charge.
+Home-page: https://github.com/weaming/py-googletrans
+Author: weaming
+Author-email: garden.yuen@gmail.com
+License: MIT
+Keywords: google translate translator
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: License :: Freeware
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Topic :: Education
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Requires-Dist: requests
+Provides-Extra: h2
+Requires-Dist: hyper; extra == 'h2'
+
+Googletranslate
+===========
+
+Installation
+------------
+
+.. code:: bash
+
+    $ pip install googletranslate
+
+
+
